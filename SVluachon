@@ -1,0 +1,138 @@
+#include<iostream>
+#include<iomanip>
+#define MAX 8
+
+using namespace std;
+
+struct SinhVien{
+	int STT;
+	int maSV;
+	char hoDem[30];
+	char ten[10];
+	char gioiTinh[10];
+	int namSinh;
+	double diemTK;	
+};
+
+struct list{
+	int count;
+	SinhVien e[MAX];
+};
+void create(list &L){
+	L.count=-1;
+}
+int empty(list L){
+	return L.count==0;
+}
+
+int full(list L){
+	return L.count==MAX-1;
+}
+int add(list &L, SinhVien sv){
+	if (full(L)) return 0;
+	else{
+		L.count++;
+		L.e[L.count]=sv;
+		return 1;
+	}
+}
+
+SinhVien taosv(int msv, char *hd,char *ten, char *gt,int ns, double diem){
+	SinhVien sv;
+	sv.maSV=msv;
+	strcpy(sv.hoDem, hd);
+	strcpy(sv.ten, ten);
+	strcpy(sv.gioiTinh, gt);
+	sv.namSinh=ns;
+	sv.diemTK=diem;
+	return sv;
+}
+void input(list &L){
+	add(L, taosv(1001,"Tran Van","Thanh","Nam",1997,7.5));
+	add(L,taosv(1002,"Nguyen Thi","Huong","Nu",1998,7.2));
+	add(L,taosv(1003,"Nguyen Van","Binh","Nam",1996,6.4));
+	add(L,taosv(1004,"Bui Thi","Hong","Nu",1998,8.6));
+	add(L,taosv(1005,"Duong Van","Giang","Nam",1997,6.8));
+}
+void hienthiSV(SinhVien sv){
+	cout<<fixed;
+	cout<<setw(5)<<right<<sv.maSV<<" ";
+	cout<<setw(13)<<left<<sv.hoDem;
+	cout<<setw(7)<<left<<sv.ten;
+	cout<<setw(8)<<left<<sv.gioiTinh;
+	cout<<setw(10)<<left<<sv.namSinh;
+	cout<<setw(10)<<left<<setprecision(1)<<sv.diemTK<<endl;
+}
+void hienthiDs(list L){
+	cout<<setw(6)<<left<<"\n MSV";
+	cout<<setw(14)<<left<<" Ho dem";
+	cout<<setw(6)<<left<<"Ten";
+	cout<<setw(8)<<left<<"G.Tinh";
+	cout<<setw(10)<<left<<"N.Sinh";
+	cout<<setw(9)<<left<<"Diem TK"<<endl;
+	for(int i=0;i<L.count;i++){
+		hienthiSV(L.e[i]);
+	}
+}
+
+void xoaSVdau(list &L){
+	if(L.count<=0){
+		cout<<"\nDanh sach rong ";
+		return;
+	}
+	for(int i=1;i<=L.count;i++){
+		L.e[i-1]=L.e[i];
+	}
+	L.count--;
+}
+
+int insert(list &L,int k, SinhVien X){
+	if (k<L.count+1 && k>0 && !full(L)){
+		for (int i=L.count;i>=k-1;i--)
+			L.e[i+1]=L.e[i];
+		L.e[k-1]=X;
+		L.count++;
+		return 1;
+	}
+	else return 0;
+}
+
+void chenSVvaovt3(list &L){
+	SinhVien sv;
+	sv=taosv(1006,"Le Thi","Doan","Nu",1998,7.6);
+	if (insert(L,3,sv)){
+		printf("\nChen thanh cong!");
+		printf("\n\nDanh sach sau khi chen: ");
+		hienthiDs(L);
+	}
+	else{
+		printf("\nChen khong thanh cong");
+	}
+}
+
+void SXTheoTen(list &L){
+	int i,j,m;
+	SinhVien tg;
+	for(int i=0;i<L.count;i++){
+		m=i;
+		for(j=i+1;j<L.count;j++)
+			if(strcmp(L.e[j].ten,L.e[m].ten)<0)
+				m=j;
+		tg=L.e[i];
+		L.e[i]=L.e[m];
+		L.e[m]=tg;
+	}
+}
+
+int main(){
+	list L;
+	create(L);
+	input(L);
+	hienthiDs(L);
+	xoaSVdau(L);
+	hienthiDs(L);
+	chenSVvaovt3(L);
+	hienthiDs(L);
+	SXTheoTen(L);
+	hienthiDs(L);
+}
